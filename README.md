@@ -1,21 +1,8 @@
 # Articuno
 
-**TODO: Add description**
+Articuno is a static website generator written in Elixir. 
 
-## Installation
+Articuno a pet project and is not really intended for use by others BUT I do want to make the code open source in case people can get some value out of that. If you do want an Elixir-based site generator checkout:
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `articuno` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:articuno, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/articuno](https://hexdocs.pm/articuno).
-
+* <https://github.com/BennyHallett/obelisk>
+* <https://github.com/Dalgona/Serum>
