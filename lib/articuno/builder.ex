@@ -7,22 +7,11 @@ defmodule Articuno.Builder do
 
     case File.read(sitePath) do
       {:ok, content} ->
-        site = Poison.decode!(content, as: %SiteDescription{})
+        site = Poison.decode!(content, as: %Site{})
 
-        indexContent = """
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <title>#{site.title}</title>
-        </head>
-        <body>
-          <p>No content, yet.</p>
-        </body>
-        </html>
-        """
-
-        exportSite(buildPath, indexContent)
+        indexTemplatePath = Path.join(dir, "templates/base.html.eex")
+        exportString = EEx.eval_file(indexTemplatePath, site_name: site.site_name)
+        exportSite(buildPath, exportString)
 
       {:error, reason} ->
         IO.puts("Failed building site, #{reason}")
@@ -30,11 +19,18 @@ defmodule Articuno.Builder do
   end
 
   defp exportSite(path, indexContent) do
+    # Clear build cache
+    if File.exists?(path) do
+      File.rm_rf!(path)
+    end
+
+    # Make build folder
     File.mkdir!(path)
     IO.puts("exportSite path #{path}")
     indexPath = Path.join(path, "index.html")
     IO.puts("exportSite indexPath #{indexPath}")
 
+    # open index page
     case File.open(indexPath, [:write]) do
       {:ok, file} ->
         IO.binwrite(file, indexContent)
