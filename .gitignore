@@ -24,3 +24,7 @@ articuno-*.tar
 
 # Don't commit the binary
 articuno
+
+# Don't commit build results of sites
+
+_build/
