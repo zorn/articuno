@@ -1,6 +1,11 @@
 defmodule Articuno.Builder do
-  def build do
-    case File.read("site.json") do
+  def build(args) do
+    dir = directoryFromArguments(args)
+    sitePath = Path.join(dir, "site.json")
+    buildPath = Path.join(dir, "_build")
+    IO.puts("sitePath #{sitePath}")
+
+    case File.read(sitePath) do
       {:ok, content} ->
         site = Poison.decode!(content, as: %SiteDescription{})
 
@@ -17,21 +22,33 @@ defmodule Articuno.Builder do
         </html>
         """
 
-        exportSite(indexContent)
+        exportSite(buildPath, indexContent)
 
       {:error, reason} ->
         IO.puts("Failed building site, #{reason}")
     end
   end
 
-  defp exportSite(indexContent) do
-    case File.open("_build/index.html", [:write]) do
+  defp exportSite(path, indexContent) do
+    File.mkdir!(path)
+    IO.puts("exportSite path #{path}")
+    indexPath = Path.join(path, "index.html")
+    IO.puts("exportSite indexPath #{indexPath}")
+
+    case File.open(indexPath, [:write]) do
       {:ok, file} ->
         IO.binwrite(file, indexContent)
         File.close(file)
 
       {:error, reason} ->
         IO.puts("Failed building site, #{reason}")
+    end
+  end
+
+  defp directoryFromArguments(args) do
+    case args do
+      [_, dir] -> dir
+      [_] -> "."
     end
   end
 end

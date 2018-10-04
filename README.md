@@ -6,3 +6,25 @@ Articuno a pet project and is not really intended for use by others BUT I do wan
 
 * <https://github.com/BennyHallett/obelisk>
 * <https://github.com/Dalgona/Serum>
+
+## Build
+
+Articuno is a command line app built using escript. As such to build the binary you run:
+
+    mix escript.build
+
+## Run
+
+Once built, you can use Articuno to make a new site using 
+
+    ./articuno init
+
+This will generate a `site.json` file.
+
+To build a site use:
+
+    ./articuno build path/to/site
+
+This will generate the website at `path/to/site/_build`. 
+
+Feel free to copy the results you your webserver of choice.

@@ -8,7 +8,7 @@ defmodule Articuno.CLI do
 
     case command do
       "build" ->
-        build()
+        build(args)
 
       "init" ->
         init()
@@ -22,8 +22,8 @@ defmodule Articuno.CLI do
     Articuno.Initializer.new_site()
   end
 
-  defp build do
-    Articuno.Builder.build()
+  defp build(args) do
+    Articuno.Builder.build(args)
   end
 
   defp help() do
