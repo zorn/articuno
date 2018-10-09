@@ -1,13 +1,31 @@
 defmodule Articuno.Builder do
+  alias Articuno.SiteInfo, as: SiteInfo
+
+  defmodule Job do
+    defstruct [:site_info, :site_path, :build_path]
+  end
+
   def build(args) do
+    # make path to site file
+    # make path to build folder
+    # read site info
+    # delete build folder
+    # make new empty folder
+    # copy static assets
+    # generate pages
+    # generate posts
+    # generate json feed
+    # generate rss feed
+
     dir = directoryFromArguments(args)
+
     sitePath = Path.join(dir, "site.json")
     buildPath = Path.join(dir, "_build")
     IO.puts("sitePath #{sitePath}")
 
     case File.read(sitePath) do
       {:ok, content} ->
-        site = Poison.decode!(content, as: %Site{})
+        site = Poison.decode!(content, as: %SiteInfo{})
 
         indexTemplatePath = Path.join(dir, "templates/base.html.eex")
         exportString = EEx.eval_file(indexTemplatePath, site_name: site.site_name)

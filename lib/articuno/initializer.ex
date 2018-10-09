@@ -1,8 +1,10 @@
 defmodule Articuno.Initializer do
-  def new_site do
+  alias Articuno.SiteInfo, as: SiteInfo
+
+  def new_site(_) do
     case File.open("site.json", [:write]) do
       {:ok, file} ->
-        json = Poison.encode!(%Site{site_name: "Mike Zornek"})
+        json = Poison.encode!(%SiteInfo{site_name: "Mike Zornek"})
         IO.binwrite(file, json)
         File.close(file)
 

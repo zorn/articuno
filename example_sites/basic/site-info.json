@@ -1,8 +1,6 @@
 {
   "site_name": "Mike Zornek",
   "site_description": "Sharing life and geek notes from Philadelphia.",
-  "date_format": "{WDfull}, {D} {Mshort} {YYYY}",
-  "base_url": "/",
   "author_email": "mike@mikezornek.com",
-  "author": "Mike Zornek"
+  "author_name": "Mike Zornek"
 }

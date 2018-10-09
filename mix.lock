@@ -1,3 +1,4 @@
 %{
   "poison": {:hex, :poison, "4.0.1", "bcb755a16fac91cad79bfe9fc3585bb07b9331e50cfe3420a24bcc2d735709ae", [:mix], [], "hexpm"},
+  "temp": {:hex, :temp, "0.4.6", "9bff1102e2ee5d02de315a3cd9ad333ce8172642809e9ac4e5d738dd63161682", [:mix], [], "hexpm"},
 }

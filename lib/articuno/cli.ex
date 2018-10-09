@@ -1,25 +1,39 @@
 defmodule Articuno.CLI do
+  @moduledoc """
+  This module defines the behaviors to be executed based
+  on the command line interface and various passed
+  in arguments.
+  """
+
+  @doc """
+  Executes behavior for the command line app when
+  no arguments are passed in, in this case printing 
+  the help message.
+  """
   def main([]) do
     help()
   end
 
+  @doc """
+  Executes behavior for the command line app when
+  arguments are passed in. Valid arguments are 
+  `init` and `build`.
+  """
   def main(args) do
     command = List.first(args)
+    execute(command, args)
+  end
 
+  defp execute(command, args) do
     case command do
-      "build" ->
-        build(args)
-
-      "init" ->
-        init()
-
-      _ ->
-        unknown(command)
+      "build" -> build(args)
+      "init" -> init(args)
+      _ -> unknown(command)
     end
   end
 
-  defp init do
-    Articuno.Initializer.new_site()
+  defp init(args) do
+    Articuno.Initializer.new_site(args)
   end
 
   defp build(args) do
