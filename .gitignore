@@ -23,7 +23,7 @@ erl_crash.dump
 articuno-*.tar
 
 # Don't commit the binary
-articuno
+/articuno
 
 # Don't commit build results of sites
 
