@@ -37,8 +37,6 @@ defmodule Articuno.FolderRepTest do
     assert File.exists?(Path.join(dir_path, "website/js/app.js"))
     assert File.exists?(Path.join(dir_path, "website/index.html"))
 
-    IO.puts(dir_path)
-
     # Remove file system artifacts
     File.rm_rf(dir_path)
   end
