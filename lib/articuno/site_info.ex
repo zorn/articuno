@@ -10,4 +10,9 @@ defmodule Articuno.SiteInfo do
     * `:author_name` - the default name of the author as a string for  posts that do not define an author, optional
   """
   defstruct [:site_name, :site_description, :author_email, :author_name]
+
+  def site_info(site_path) do
+    site_info_path = Path.join(site_path, "site.json")
+    Poison.decode!(File.read!(site_info_path), as: %Articuno.SiteInfo{})
+  end
 end
