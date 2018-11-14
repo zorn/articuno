@@ -1,24 +1,35 @@
-# defmodule CliTest do
-#   use ExUnit.Case
-#   doctest Articuno
+defmodule CliTest do
+  use ExUnit.Case, async: false
+  doctest Articuno
 
-#   import Articuno.CLI, only: [parse_args: 1]
+  import Mock
 
-#   #   test ":help returned by option parsing with -h and --help options" do
-#   #     assert parse_args(["-h", "anything"]) == :help
-#   #     assert parse_args(["--help", "anything"]) == :help
-#   #     assert parse_args([]) == :help
-#   #   end
+  @default_help_message "Please add a command like `init` or `build`."
 
-#   #   test "when a site path but no build path is provided the default build path is used" do
-#   #     assert parse_args(["."]) == {"/Users/zorn/??"}
-#   #   end
+  # http://redgreenrepeat.com/2017/09/29/mocking-elixir-io-puts/
 
-#   #   test "two values returned if two given" do
-#   #     assert parse_args([".", "_build/"]) == {".", "_build/"}
-#   #   end
+  describe "main/1" do
+    test "When the app is run with no commands or arguments, I expect the default help message to appear." do
+      with_mock IO, [], puts: fn _ -> nil end do
+        Articuno.CLI.main([])
+        assert called(IO.puts(@default_help_message))
+      end
+    end
 
-#   #   test "count is defaulted if two values given" do
-#   #     assert parse_args(["user", "project"]) == {"user", "project", 4}
-#   #   end
-# end
+    test "When the help command is ran I expect to see a helpful message on the console." do
+      with_mock IO, [], puts: fn _ -> nil end do
+        Articuno.CLI.main(["help"])
+        assert called(IO.puts(@default_help_message))
+      end
+    end
+
+    test "When the build example site basic is ran, the expected output is produced." do
+    end
+
+    test "When the build command is ran with no arguments a useful help message is presented" do
+    end
+
+    test "When the initialize command is ran a new default site is created" do
+    end
+  end
+end
