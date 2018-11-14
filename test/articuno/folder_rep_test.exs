@@ -9,16 +9,16 @@ defmodule Articuno.FolderRepTest do
   test "can write a FolderRep to disk" do
     folder_rep = %FolderRep{
       foldername: "website",
-      children: [
+      files: [
         %FolderRep{
           foldername: "css",
-          children: [
+          files: [
             %FileRep{filename: "style.css", content: "p{}"}
           ]
         },
         %FolderRep{
           foldername: "js",
-          children: [
+          files: [
             %FileRep{filename: "app.js", content: "alert();"}
           ]
         },

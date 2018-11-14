@@ -5,7 +5,7 @@ defmodule Articuno.FileSystemToolsTest do
   alias Articuno.FileSystemTools
   alias Articuno.Job
 
-  test "can delete a build folder" do
+  xtest "can delete a build folder" do
     # Generate a path to a temp build folder
     {:ok, dir_path} = Temp.mkdir()
     build_path = dir_path

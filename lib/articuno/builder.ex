@@ -1,58 +1,124 @@
 defmodule Articuno.Builder do
-  alias Articuno.FileSystemTools
-  alias Articuno.SiteInfo
-  alias Articuno.FolderRep
-  alias Articuno.Job
+  alias Articuno.{SiteRender, FileRep, FolderRep}
 
   def build(args) do
-    args
-    |> create_job
+    %SiteRender{source_path: site_path(args)}
     |> process
   end
 
-  def process(job) do
-    job
-    |> FileSystemTools.delete_build_folder()
-    |> copy_static_assests
+  def process(site_render) do
+    site_render
+    |> delete_build_folder
+
+    #   |> copy_static_assests
+
     |> generate_page_content
-    |> generate_post_content
-    |> generate_json_feed
-    |> generate_rss_feed
-    |> render_to_file_system
+
+    #   |> generate_post_content
+    #   |> generate_json_feed
+    #   |> generate_rss_feed
+    #   |> render_to_file_system
   end
 
-  defp create_job(args) do
-    site_path = Path.join(site_folder(args), "site.json")
-    build_path = Path.join(site_folder(args), "_build")
-    {:ok, content} = File.read(site_path)
-    site_info = Poison.decode!(content, as: %SiteInfo{})
-    root_folder = %FolderRep{foldername: "export", children: []}
+  defp delete_build_folder(site_render) do
+    build_path = SiteRender.build_path(site_render)
 
-    %Job{
-      site_info: site_info,
-      site_path: site_path,
-      build_path: build_path,
-      root_folder: root_folder
-    }
+    if File.exists?(build_path) do
+      File.rm_rf!(build_path)
+    end
+
+    site_render
   end
 
-  defp copy_static_assests(job), do: job
+  # defp copy_static_assests(job), do: job
 
-  defp generate_page_content(job), do: job
+  defp generate_page_content(site_render) do
+    source_path = site_render.source_path
 
-  defp generate_post_content(job), do: job
+    # Load site info
+    site_info = site_info_using_site_path(source_path)
 
-  defp generate_json_feed(job), do: job
+    # load page templates
+    template_path = Path.join(source_path, "templates/base.html.eex")
 
-  defp generate_rss_feed(job), do: job
+    # get file list of all pages
+    page_path = Path.join(source_path, "pages")
+    {:ok, files} = File.ls(page_path)
 
-  defp render_to_file_system(job), do: job
+    # for each page import content
 
-  defp site_folder(args) do
+    page_files =
+      Enum.reduce(files, [], fn file, filenames ->
+        if Path.extname(file) == ".md" do
+          filenames ++ [file]
+        else
+          filenames
+        end
+      end)
+
+    # IO.puts("Page Files: #{page_files}")
+
+    new_file_reps =
+      Enum.reduce(Enum.sort(page_files), [], fn file, new_reps ->
+        # IO.puts("File is #{file}")
+
+        # render the file content inside a template
+        file_path = Path.join(page_path, file)
+        {:ok, content} = File.read(file_path)
+
+        # template will need content + site info
+        output = EEx.eval_file(template_path, site_name: site_info.site_name, content: content)
+
+        # take the result and add it to the SiteRender
+        # Remove .md and replace with .html
+        # IO.puts("File before trim is #{file}")
+
+        base_filename = String.trim_trailing("#{file}", Path.extname(file))
+        new_filename = "#{base_filename}.html"
+        new_file_rep = %FileRep{filename: new_filename, content: output}
+
+        new_reps ++ [new_file_rep]
+      end)
+
+    new_destination_files = site_render.destination_rep.files ++ new_file_reps
+    new_destination = %FolderRep{site_render.destination_rep | :files => new_destination_files}
+    %SiteRender{site_render | :destination_rep => new_destination}
+  end
+
+  # defp generate_post_content(job) do
+  # Load site info
+  # site_info = site_info_using_site_path(site_render.source_path)
+
+  # load page templates
+
+  # get file list of all pages
+
+  # sort the pages in date order
+
+  # for each page import content
+
+  # render that content inside a template
+  # template will need content + site info + prev_page + next_page
+
+  # take the result and add it to the SiteRender
+  # end
+
+  # defp generate_json_feed(job), do: job
+
+  # defp generate_rss_feed(job), do: job
+
+  # defp render_to_file_system(job), do: job
+
+  defp site_path(args) do
     case args do
       [_, dir] -> dir
       [_] -> "."
     end
+  end
+
+  def site_info_using_site_path(site_path) do
+    site_info_path = Path.join(site_path, "site-info.json")
+    Poison.decode!(File.read!(site_info_path), as: %Articuno.SiteInfo{})
   end
 
   # find site_info
